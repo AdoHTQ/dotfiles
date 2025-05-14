@@ -5,6 +5,10 @@
 # If not running interactively, don't do anything
 [[ $- != *i* ]] && return
 
+alias theme='stow -d ~/dotfiles'
+alias untheme='stow -D -d ~/dotfiles'
+
+alias code='codium'
 alias ls='ls -a --color=auto'
 alias grep='grep --color=auto'
 PS1='[\u@\h \W]\$ '
