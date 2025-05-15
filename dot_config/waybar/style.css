@@ -78,9 +78,10 @@ button:hover {
     box-shadow: inset 0 -3px #ffffff;
 }
 
+#custom-notification,
+#custom-power,
 #clock,
 #battery,
-#custom-power,
 #cpu,
 #memory,
 #disk,
@@ -117,6 +118,7 @@ button:hover {
 
 #clock {
     background-color: #64727D;
+    border-radius: 5px;
 }
 
 #battery {
@@ -125,7 +127,15 @@ button:hover {
 }
 
 #custom-power {
-    
+    color:white;
+    transition: color 0.15s ease-in-out;
+}
+#custom-power:hover {
+    color:red;
+}
+
+#custom-notification {
+  font-family: "NotoSansMono Nerd Font";
 }
 
 #battery.charging, #battery.plugged {
