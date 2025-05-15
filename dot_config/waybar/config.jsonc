@@ -2,7 +2,7 @@
     "layer": "top",
     "modules-left": ["hyprland/workspaces", "hyprland/mode"],
     "modules-center": ["hyprland/window"],
-    "modules-right": ["battery", "battery", "battery", "battery", "battery", "battery", "battery"],
+    "modules-right": ["wireplumber", "battery", "clock"],
     "sway/window": {
         "max-length": 50
     },
