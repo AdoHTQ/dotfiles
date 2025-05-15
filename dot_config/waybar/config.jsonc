@@ -2,15 +2,23 @@
     "layer": "top",
     "modules-left": ["hyprland/workspaces", "hyprland/mode"],
     "modules-center": ["hyprland/window"],
-    "modules-right": ["wireplumber", "battery", "clock"],
+    "modules-right": ["wireplumber", "battery", "clock", "custom/power"],
+
     "sway/window": {
         "max-length": 50
     },
+
     "battery": {
         "format": "{capacity}% {icon}",
         "format-icons": ["", "", "", "", ""]
     },
+
     "clock": {
         "format-alt": "{:%a, %d. %b  %H:%M}"
+    },
+
+    "custom/power": {
+        "on-click": "adios --systemd",
+        "format": "&#xf011;" //Power icon
     }
 }
