@@ -14,11 +14,11 @@
         "custom/notification",
         "custom/power"
     ],
-    "sway/window": {
-        "max-length": 50
+    "hyprland/window": {
+        "format": "{class} || {title}"
     },
     "battery": {
-        "format": "{capacity}% {icon}",
+        "format": "{icon} {capacity}%",
         "format-icons": [
             "",
             "",
@@ -29,6 +29,16 @@
     },
     "clock": {
         "format-alt": "{:%a, %d. %b  %H:%M}"
+    },
+    "wireplumber": {
+        "format": "{icon} {volume}%",
+        "format-muted": "",
+        "on-click": "qpwgraph",
+        "format-icons": [
+            "",
+            "",
+            ""
+        ]
     },
     "custom/power": {
         "on-click": "adios --systemd",
