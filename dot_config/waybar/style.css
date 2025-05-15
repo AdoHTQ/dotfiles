@@ -121,7 +121,8 @@ button:hover {
 }
 
 #battery {
-    /* background-color: #ffffff; */
+    color: #ffffff;
+    transition: color 0.5s ease-in-out;
 }
 
 #custom-power {
@@ -137,8 +138,7 @@ button:hover {
 }
 
 #battery.charging, #battery.plugged {
-    color: #ffffff;
-    background-color: #26A65B;
+    color: #26A65B;
 }
 
 @keyframes blink {
