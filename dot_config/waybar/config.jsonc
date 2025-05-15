@@ -32,7 +32,7 @@
     },
     "wireplumber": {
         "format": "{icon} {volume}%",
-        "format-muted": "",
+        "format-muted": " {volume}%",
         "on-click": "qpwgraph",
         "format-icons": [
             "",
