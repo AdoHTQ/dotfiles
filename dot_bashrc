@@ -11,5 +11,7 @@ alias untheme='stow -D -d ~/dotfiles'
 alias code='codium'
 alias ls='ls -a --color=auto'
 alias grep='grep --color=auto'
-alias reload='chezmoi apply && hyprctl reload && systemctl --user restart waybar.service'
+alias reload='chezmoi apply && hyprctl reload && systemctl --user restart waybar.service && swaync-client --reload-config'
 PS1='[\u@\h \W]\$ '
+
+fastfetch
