@@ -41,7 +41,7 @@
         ]
     },
     "custom/power": {
-        "on-click": "adios --systemd",
+        "on-click": "wlogout",
         "format": "&#xf011;" //Power icon
     },
     "custom/notification": {
