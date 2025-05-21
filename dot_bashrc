@@ -8,7 +8,12 @@
 alias code='codium'
 alias ls='ls -a --color=auto'
 alias grep='grep --color=auto'
-alias reload='chezmoi apply && hyprctl reload && systemctl --user restart waybar.service && swaync-client --reload-config'
+
+alias reload='chezmoi apply && hyprctl reload && 
+systemctl --user restart waybar.service && 
+systemctl --user restart hypridle.service && 
+swaync-client --reload-config'
+
 PS1='[\u@\h \W]\$ '
 
 fastfetch
