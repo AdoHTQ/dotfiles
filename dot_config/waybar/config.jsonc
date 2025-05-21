@@ -41,7 +41,7 @@
         ]
     },
     "custom/power": {
-        "on-click": "wlogout",
+        "on-click": "wlogout -b 2",
         "format": "&#xf011;" //Power icon
     },
     "custom/notification": {
