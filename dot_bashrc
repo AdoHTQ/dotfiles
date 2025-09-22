@@ -16,6 +16,8 @@ swaync-client --reload-config'
 # &&
 #sudo keyd reload'
 
+alias sys-up-down='sudo pacman -Syyuu && shutdown now'
+
 PS1='[\u@\h \W]\$ '
 
 fastfetch
