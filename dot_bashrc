@@ -18,6 +18,8 @@ swaync-client --reload-config'
 
 alias sys-up-down='sudo pacman -Syyuu && shutdown now'
 
+alias fix-arduino="sudo chmod a+rw /dev/ttyACM0"
+
 PS1='[\u@\h \W]\$ '
 
 fastfetch
