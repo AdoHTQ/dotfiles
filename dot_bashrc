@@ -12,6 +12,7 @@ alias grep='grep --color=auto'
 alias reload='chezmoi apply && hyprctl reload && 
 systemctl --user restart waybar.service && 
 systemctl --user restart hypridle.service && 
+systemctl --user restart hyprpaper.service && 
 swaync-client --reload-config'
 # &&
 #sudo keyd reload'
