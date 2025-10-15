@@ -5,6 +5,8 @@
 # If not running interactively, don't do anything
 [[ $- != *i* ]] && return
 
+export EDITOR="code --wait"
+
 #alias code='codium'
 alias ls='ls -a --color=auto'
 alias grep='grep --color=auto'
