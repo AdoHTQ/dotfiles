@@ -26,3 +26,6 @@ alias fix-arduino="sudo chmod a+rw /dev/ttyACM0"
 PS1='[\u@\h \W]\$ '
 
 fastfetch
+
+#Rust
+. "$HOME/.cargo/env"
