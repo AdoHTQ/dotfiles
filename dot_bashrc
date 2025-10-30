@@ -10,12 +10,10 @@ export EDITOR="code --wait"
 #alias code='codium'
 alias ls='ls -a --color=auto'
 alias grep='grep --color=auto'
-
+# systemctl --user restart hypridle.service && 
 alias reload='chezmoi apply && hyprctl reload && 
 systemctl --user restart waybar.service && 
-systemctl --user restart hypridle.service && 
-systemctl --user restart hyprpaper.service && 
-swaync-client --reload-config'
+systemctl --user restart hyprpaper.service
 # &&
 #sudo keyd reload'
 
@@ -25,7 +23,7 @@ alias fix-arduino="sudo chmod a+rw /dev/ttyACM0"
 
 PS1='[\u@\h \W]\$ '
 
-fastfetch
+#fastfetch
 
 #Rust
 . "$HOME/.cargo/env"
