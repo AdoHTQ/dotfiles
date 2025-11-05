@@ -19,7 +19,7 @@ systemctl --user restart hyprpaper.service
 
 alias sys-up-down='sudo pacman -Syyuu && shutdown now'
 
-alias fix-arduino="sudo chmod a+rw /dev/ttyACM0"
+alias fix-arduino="sudo chmod a+rw /dev/ttyUSB0"
 
 PS1='[\u@\h \W]\$ '
 
