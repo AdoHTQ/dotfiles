@@ -5,7 +5,7 @@
 # If not running interactively, don't do anything
 [[ $- != *i* ]] && return
 
-export EDITOR="code --wait"
+export EDITOR="codium --wait"
 
 #alias code='codium'
 alias ls='ls -a --color=auto'
@@ -27,3 +27,7 @@ PS1='[\u@\h \W]\$ '
 
 #Rust
 . "$HOME/.cargo/env"
+
+export PYENV_ROOT="$HOME/.pyenv"
+[[ -d $PYENV_ROOT/bin ]] && export PATH="$PYENV_ROOT/bin:$PATH"
+eval "$(pyenv init - bash)"
