@@ -34,3 +34,5 @@ eval "$(pyenv init - bash)"
 
 #Rust for esp variables
 . $HOME/export-esp.sh
+
+fastfetch
