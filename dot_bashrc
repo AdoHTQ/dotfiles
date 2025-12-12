@@ -21,6 +21,8 @@ alias sys-up-down='sudo pacman -Syyuu && shutdown now'
 
 alias fix-arduino="sudo chmod a+rw /dev/ttyUSB0"
 
+alias resonite="WEBKIT_DISABLE_COMPOSITING_MODE=1 gale"
+
 PS1='[\u@\h \W]\$ '
 
 #fastfetch
