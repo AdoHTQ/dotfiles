@@ -6,6 +6,7 @@
 [[ $- != *i* ]] && return
 
 export EDITOR="codium --wait"
+export PKG_CONFIG_PATH=/usr/lib/wlroots0.17/pkgconfig:$PKG_CONFIG_PATH
 
 #alias code='codium'
 alias ls='ls -a --color=auto'
