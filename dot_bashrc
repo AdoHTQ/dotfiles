@@ -12,6 +12,7 @@ export godot4=/usr/bin/godot-mono
 #alias code='codium'
 alias ls='ls -a --color=auto'
 alias grep='grep --color=auto'
+alias yay='yay --editmenu'
 # systemctl --user restart hypridle.service && 
 alias reload='chezmoi apply && hyprctl reload && 
 systemctl --user restart waybar.service && 
