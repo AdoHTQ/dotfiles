@@ -20,6 +20,8 @@ systemctl --user restart hyprpaper.service
 # &&
 #sudo keyd reload'
 
+alias godot-build='dotnet build && godot-mono'
+
 alias sys-up-down='sudo pacman -Syyuu && shutdown now'
 
 alias fix-arduino="sudo chmod a+rw /dev/ttyUSB0"
