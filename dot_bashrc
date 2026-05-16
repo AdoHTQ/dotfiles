@@ -5,7 +5,7 @@
 # If not running interactively, don't do anything
 [[ $- != *i* ]] && return
 
-export EDITOR="codium --wait"
+export EDITOR="nvim"
 export PKG_CONFIG_PATH=/usr/lib/wlroots0.17/pkgconfig:$PKG_CONFIG_PATH
 export godot4=/usr/bin/godot-mono
 
