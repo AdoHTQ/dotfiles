@@ -5,7 +5,7 @@
 # If not running interactively, don't do anything
 [[ $- != *i* ]] && return
 
-export EDITOR="nvim"
+export EDITOR="codium"
 export PKG_CONFIG_PATH=/usr/lib/wlroots0.17/pkgconfig:$PKG_CONFIG_PATH
 export godot4=/usr/bin/godot-mono
 
@@ -30,7 +30,8 @@ alias resonite="WEBKIT_DISABLE_COMPOSITING_MODE=1 gale"
 
 PS1='[\u@\h \W]\$ '
 
-#fastfetch
+#ros2
+source /opt/ros/jazzy/setup.bash 
 
 #Rust
 . "$HOME/.cargo/env"
