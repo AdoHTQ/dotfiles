@@ -30,8 +30,13 @@ alias resonite="WEBKIT_DISABLE_COMPOSITING_MODE=1 gale"
 
 PS1='[\u@\h \W]\$ '
 
-#ros2
-source /opt/ros/jazzy/setup.bash 
+if [ -n "$CONTAINER_ID" ]; then
+    # only runs inside a distrobox container
+    echo "Entering distrobox: $CONTAINER_ID"
+    #ros2
+    source /opt/ros/jazzy/setup.bash 
+fi
+
 
 #Rust
 . "$HOME/.cargo/env"
