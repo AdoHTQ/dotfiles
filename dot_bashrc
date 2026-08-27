@@ -35,6 +35,7 @@ if [ -n "$CONTAINER_ID" ]; then
     echo "Entering distrobox: $CONTAINER_ID"
     #ros2
     source /opt/ros/jazzy/setup.bash 
+    source /opt/ros/jazzy/local_setup.bash
 fi
 
 
