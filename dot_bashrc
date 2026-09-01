@@ -36,6 +36,7 @@ if [ -n "$CONTAINER_ID" ]; then
     #ros2
     source /opt/ros/jazzy/setup.bash 
     source /opt/ros/jazzy/local_setup.bash
+    export ROS_DOMAIN_ID=41
 fi
 
 
