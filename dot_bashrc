@@ -15,7 +15,6 @@ alias grep='grep --color=auto'
 alias yay='yay --editmenu'
 # systemctl --user restart hypridle.service && 
 alias reload='chezmoi apply && hyprctl reload && 
-systemctl --user restart waybar.service && 
 systemctl --user restart hyprpaper.service
 # &&
 #sudo keyd reload'

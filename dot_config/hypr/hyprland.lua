@@ -22,6 +22,7 @@ hl.on("hyprland.start", function()
     hl.exec_cmd("swaync")
     hl.exec_cmd("waypaper --restore")
     hl.exec_cmd("hyprsunset")
+    hl.exec_cmd("qs")
 end)
 
 -- `exec` -> runs on every config load. This file is re-executed on reload,
