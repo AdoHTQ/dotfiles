@@ -10,8 +10,10 @@ Chip {
     onClicked: Quickshell.execDetached(["wlogout", "-b", "2"])
 
     Text {
+        anchors.verticalCenter: parent.verticalCenter
         font.family: Theme.iconFont
         font.pixelSize: Theme.iconSize + 1
+        font.weight: Theme.iconWeight
         color: root.hovered ? Theme.bad : Theme.text
         text: "\uf011" // power-off
         Behavior on color { ColorAnimation { duration: 120 } }

@@ -17,8 +17,10 @@ Chip {
     readonly property color fg: critical ? Theme.bad : (charging ? Theme.good : Theme.text)
 
     Text {
+        anchors.verticalCenter: parent.verticalCenter
         font.family: Theme.iconFont
         font.pixelSize: Theme.iconSize
+        font.weight: Theme.iconWeight
         color: root.fg
         // battery-full / three-quarters / half / quarter / empty
         text: {
@@ -32,6 +34,7 @@ Chip {
     }
 
     Text {
+        anchors.verticalCenter: parent.verticalCenter
         text: root.pct + "%"
         color: root.fg
         font.family: Theme.fontFamily

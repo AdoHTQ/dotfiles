@@ -18,6 +18,7 @@ Chip {
     // file dependency-free and easy to read.
 
     Text {
+        anchors.verticalCenter: parent.verticalCenter
         text: root.now
         color: Theme.text
         font.family: Theme.fontFamily

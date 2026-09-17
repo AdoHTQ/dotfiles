@@ -29,6 +29,17 @@ PanelWindow {
         radius: Theme.radius
         color: Theme.bg
 
+        // Thin hairline at the bottom edge. With the bar flush against the
+        // top of the screen (no gap, no radius) this is what keeps it from
+        // looking like it just bleeds into whatever window is underneath.
+        Rectangle {
+            anchors.left: parent.left
+            anchors.right: parent.right
+            anchors.bottom: parent.bottom
+            height: 1
+            color: Theme.divider
+        }
+
         Item {
             anchors.fill: parent
             anchors.leftMargin: Theme.sectionSpacing
@@ -42,6 +53,7 @@ PanelWindow {
 
                 Workspaces { monitor: bar.monitor; anchors.verticalCenter: parent.verticalCenter }
                 Submap { anchors.verticalCenter: parent.verticalCenter }
+                MediaWidget { screen: bar.screen; anchors.verticalCenter: parent.verticalCenter }
             }
 
             // modules-center
@@ -58,7 +70,6 @@ PanelWindow {
                 Volume {}
                 Battery {}
                 ClockWidget {}
-                // Notifications {} // disabled to match the commented-out custom/notification in config.jsonc
                 PowerButton {}
             }
         }
