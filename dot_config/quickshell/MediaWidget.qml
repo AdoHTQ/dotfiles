@@ -1,5 +1,6 @@
 pragma ComponentBehavior: Bound
 import QtQuick
+import QtQuick.Window
 import Quickshell
 import Quickshell.Io
 import Quickshell.Services.Mpris
@@ -41,9 +42,14 @@ Item {
     // screen without guessing at any window/screen lookup API.
     required property ShellScreen screen
 
-    readonly property int barCount: 9
-    readonly property int maxRange: 7
+    readonly property int barCount: 24
+    readonly property int maxRange: 6
     property var levels: new Array(barCount).fill(0)
+
+    // Set true if cava fails to launch or exits abnormally -- see the
+    // Process below. Surfaced as a small red dot rather than only a
+    // console warning, since console output is easy to miss.
+    property bool cavaFailed: false
 
     // Slow looping phase driving the idle wave, always running.
     property real idleT: 0
@@ -91,10 +97,22 @@ Item {
         Behavior on color { ColorAnimation { duration: 120 } }
     }
 
+    // Failure indicator -- only visible if cava never started/crashed.
+    Rectangle {
+        visible: root.cavaFailed
+        width: 5
+        height: 5
+        radius: 2.5
+        color: Theme.bad
+        anchors.top: parent.top
+        anchors.right: parent.right
+        anchors.margins: 2
+    }
+
     Row {
         id: visualizerRow
         anchors.centerIn: parent
-        spacing: 2
+        spacing: 1
         height: root.implicitHeight
 
         Repeater {
@@ -104,13 +122,18 @@ Item {
                 id: bar
                 required property int index
                 anchors.bottom: parent.bottom
-                width: 3
-                radius: 1.5
-                color: root.playing ? Theme.accent : Theme.textDim
+                width: 2
+                radius: 1
+                // Bright and uniform, matching the reference look, rather
+                // than dimming when nothing's marked "playing" over MPRIS
+                // -- this widget reflects real system audio, which can be
+                // present (a browser tab, a game) with no MPRIS player at
+                // all.
+                color: root.idle ? Theme.textDim : Theme.text
                 height: root.idle
-                    ? (5 + Math.sin(root.idleT + bar.index * 0.7) * 2.5)
+                    ? (5 + Math.sin(root.idleT + bar.index * 0.5) * 2.5)
                     : Math.max(2, root.levels[bar.index] * (root.implicitHeight - 2))
-                Behavior on height { NumberAnimation { duration: 90; easing.type: Easing.OutCubic } }
+                Behavior on height { NumberAnimation { duration: 80; easing.type: Easing.OutCubic } }
                 Behavior on color { ColorAnimation { duration: 150 } }
             }
         }
@@ -126,16 +149,30 @@ Item {
         }
     }
 
-    // Writes a small cava config once on startup, then runs cava reading
-    // raw ascii bar values off stdout, one frame (semicolon-separated
-    // ints) per line. `[input] method = pulse` + `source = auto` pins it
-    // to capturing your default output's monitor via pipewire-pulse,
-    // rather than letting cava's own autodetection pick a device.
-    Process {
-        id: cava
-        running: true
-        command: ["bash", "-c",
-            "mkdir -p \"$HOME/.config/quickshell\" && cat > \"$HOME/.config/quickshell/.cava_bar.conf\" << 'CAVAEOF'\n" +
+    // Writes the cava config via Quickshell's own file API (not a bash
+    // heredoc -- one less layer of shell-quoting that can silently break)
+    // to /tmp, then starts cava directly with no shell wrapper at all.
+    // `[input] method = pulse` + `source = auto` pins capture to your
+    // default output's monitor via pipewire-pulse, rather than letting
+    // cava's own autodetection pick a device (a common cause of "MPRIS
+    // says playing, bars don't move": cava quietly listening to a silent
+    // mic instead of your speakers).
+    FileView {
+        id: cavaConfigFile
+        path: "/tmp/quickshell-media-widget-cava.conf"
+        printErrors: true
+    }
+
+    // Small delay after writing the config before starting cava, so the
+    // write has definitely landed on disk first.
+    Timer {
+        id: cavaStartDelay
+        interval: 100
+        onTriggered: cava.running = true
+    }
+
+    Component.onCompleted: {
+        cavaConfigFile.setText(
             "[general]\n" +
             "bars = " + root.barCount + "\n" +
             "framerate = 30\n\n" +
@@ -148,14 +185,20 @@ Item {
             "data_format = ascii\n" +
             "ascii_max_range = " + root.maxRange + "\n\n" +
             "[smoothing]\n" +
-            "noise_reduction = 55\n" +
-            "CAVAEOF\n" +
-            "exec cava -p \"$HOME/.config/quickshell/.cava_bar.conf\""
-        ]
+            "noise_reduction = 30\n"
+        );
+        cavaStartDelay.start();
+    }
+
+    Process {
+        id: cava
+        running: false
+        command: ["cava", "-p", cavaConfigFile.path]
         stdout: SplitParser {
             onRead: (line) => {
                 const parts = line.split(";").filter(s => s.length > 0).map(Number);
                 if (parts.length === root.barCount) {
+                    root.cavaFailed = false;
                     root.levels = parts.map(v => Math.max(0, Math.min(1, v / root.maxRange)));
                 }
             }
@@ -164,7 +207,12 @@ Item {
             onRead: (line) => console.warn("[cava]", line)
         }
         onExited: (exitCode, exitStatus) => {
-            if (exitCode !== 0) console.warn("[cava] exited with code", exitCode, "-- is cava installed?");
+            if (exitCode !== 0) {
+                root.cavaFailed = true;
+                console.warn("[cava] exited with code", exitCode,
+                    "-- run `cava -p " + cavaConfigFile.path + "` in a terminal to see why " +
+                    "(most likely: cava isn't installed, e.g. `pacman -S cava`).");
+            }
         }
     }
 
@@ -199,14 +247,26 @@ Item {
             Theme.gap,
             Math.min(menu.localAnchorX - menu.panelWidth / 2, root.screen.width - menu.panelWidth - Theme.gap)
         )
+        // Y: flush against the *bar's* actual bottom edge. Deliberately
+        // NOT recomputed from Theme.gap + Theme.barHeight -- that
+        // duplicated the bar's own positioning formula here, and drifted
+        // out of sync the moment Bar.qml/Theme.qml's real values changed
+        // without this file being updated to match (exactly what caused
+        // the visible gap). Reading the enclosing window's own geometry
+        // via the Window attached property means this is correct no
+        // matter what Bar.qml currently does. Uses contentItem (not
+        // root) for the top-edge measurement, since root itself sits
+        // vertically centered within the taller bar -- root's own (0,0)
+        // is partway down the bar, not the bar's actual top edge.
+        readonly property var barWindow: root.Window.window
+        readonly property real barWindowTop: (menu.barWindow && menu.barWindow.contentItem)
+            ? menu.barWindow.contentItem.mapToGlobal(0, 0).y - root.screen.y
+            : 0
+        readonly property real barWindowHeight: menu.barWindow ? menu.barWindow.height : Theme.barHeight
 
         anchors { top: true; left: true }
         margins {
-            // Y: flush against the *bar's* bottom edge -- computed the
-            // same way Bar.qml itself is positioned, rather than off
-            // this widget's own (shorter) height, which used to leave a
-            // several-pixel gap that made the panel look unattached.
-            top: Theme.gap + Theme.barHeight
+            top: menu.barWindowTop + menu.barWindowHeight
             left: menu.clampedLeft
         }
         implicitWidth: menu.panelWidth
@@ -223,7 +283,10 @@ Item {
                 id: card
                 width: parent.width
                 height: parent.height
-                radius: Theme.radius
+                // Explicit, not Theme.radius -- this should visibly round
+                // regardless of what the bar's own current radius is set
+                // to.
+                radius: 16
                 // Fully opaque -- unlike the bar itself, this panel
                 // shouldn't let anything behind it show through.
                 color: Qt.rgba(Theme.bg.r, Theme.bg.g, Theme.bg.b, 1)
@@ -273,18 +336,6 @@ Item {
                     font.pixelSize: Theme.fontSize - 2
                     font.bold: true
                 }
-
-                // Decorative only -- MPRIS has no generic "queue" concept
-                // to wire this up to.
-                Text {
-                    anchors.right: parent.right
-                    anchors.verticalCenter: parent.verticalCenter
-                    font.family: Theme.iconFont
-                    font.weight: Theme.iconWeight
-                    font.pixelSize: Theme.iconSize
-                    color: Theme.textDim
-                    text: "\uf142" // ellipsis-vertical
-                }
             }
 
             // Large art
@@ -318,37 +369,15 @@ Item {
                 }
             }
 
-            // Title + decorative like icon
-            Item {
+            // Title
+            Text {
                 width: parent.width
-                height: titleText.implicitHeight
-
-                Text {
-                    id: titleText
-                    anchors.left: parent.left
-                    anchors.right: heart.left
-                    anchors.rightMargin: 8
-                    elide: Text.ElideRight
-                    text: root.player ? (root.player.trackTitle || "Unknown title") : "Nothing playing"
-                    color: Theme.text
-                    font.family: Theme.fontFamily
-                    font.pixelSize: Theme.fontSize + 2
-                    font.bold: true
-                }
-
-                // Decorative only -- standard MPRIS doesn't expose a
-                // generic "liked/favorited" property to bind this to.
-                Text {
-                    id: heart
-                    anchors.right: parent.right
-                    anchors.verticalCenter: titleText.verticalCenter
-                    visible: root.player !== null
-                    font.family: Theme.iconFont
-                    font.weight: Theme.iconWeight
-                    font.pixelSize: Theme.iconSize
-                    color: Theme.textDim
-                    text: "\uf004" // heart
-                }
+                elide: Text.ElideRight
+                text: root.player ? (root.player.trackTitle || "Unknown title") : "Nothing playing"
+                color: Theme.text
+                font.family: Theme.fontFamily
+                font.pixelSize: Theme.fontSize + 2
+                font.bold: true
             }
 
             Text {
