@@ -30,21 +30,22 @@ alias resonite="WEBKIT_DISABLE_COMPOSITING_MODE=1 gale"
 PS1='[\u@\h \W]\$ '
 
 if [ -n "$CONTAINER_ID" ]; then
-    # only runs inside a distrobox container
     echo "Entering distrobox: $CONTAINER_ID"
-    #ros2
-    source /opt/ros/jazzy/setup.bash 
+    # strip any inherited pyenv shims from PATH
+    export PATH=$(echo "$PATH" | tr ':' '\n' | grep -v "$HOME/.pyenv" | paste -sd:)
+
+    source /opt/ros/jazzy/setup.bash
     source /opt/ros/jazzy/local_setup.bash
     export ROS_DOMAIN_ID=41
+else
+    export PYENV_ROOT="$HOME/.pyenv"
+    [[ -d $PYENV_ROOT/bin ]] && export PATH="$PYENV_ROOT/bin:$PATH"
+    eval "$(pyenv init - bash)"
 fi
 
 
 #Rust
 . "$HOME/.cargo/env"
-
-export PYENV_ROOT="$HOME/.pyenv"
-[[ -d $PYENV_ROOT/bin ]] && export PATH="$PYENV_ROOT/bin:$PATH"
-eval "$(pyenv init - bash)"
 
 #Rust for esp variables
 . $HOME/export-esp.sh
